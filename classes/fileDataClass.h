@@ -1,5 +1,6 @@
 #ifndef VARIABLES_H_INCLUDED
 #define VARIABLES_H_INCLUDED
+
 #include <map>
 #include <vector>
 #include <chrono>
@@ -8,19 +9,19 @@ using namespace std;
 
 class VarClass {
 public:
-    string                fileName; // File name
-    unsigned int          lines;    // Period for measurement
-    vector<unsigned int>  varList;  // List of variables
-    vector<string>        chList;   // List of channels
-    multimap<int, vector<int>>     var_time; // Map with variable-time pairs
-    multimap<string, unsigned int> var_status; //Map with variable-status pairs
-    multimap<int, double>          var_value;  //Map with variable-value pairs
+    string        fileName; // File name
+    unsigned int  lines;    // Period for measurement
+    vector<int>   varList;  // List of variables
+    vector<int>   chList;   // List of channels
+    multimap<int, vector<int>> var_time; // Map with variable-time pairs
+    multimap<int, int>         var_status; //Map with variable-status pairs
+    multimap<int, float>      var_value;  //Map with variable-value pairs
 
-    pair<double,double> get_ValMinMax(int arg_variable)
+    pair<float,float> get_ValMinMax(int arg_variable)
     {
-        pair<double, double> min_max_val(0,0);
+        pair<float, float> min_max_val(0,0);
         /* create iterator */
-        multimap<int, double>::iterator iter = this->var_value.find(arg_variable);
+        multimap<int, float>::iterator iter = this->var_value.find(arg_variable);
 
         /* initialize pair with the first element in multimap */
         min_max_val.first = min_max_val.second = iter->second;
@@ -29,11 +30,13 @@ public:
         while (iter != this->var_value.upper_bound(arg_variable))
         {
             if (min_max_val.first > iter->second)
+            {
                 min_max_val.first = iter->second;
+            }
             if (min_max_val.second < iter->second)
+            {
                 min_max_val.second = iter->second;
-
-            //cout << "Key: " << arg_variable << "Min Value: " << min_max_val.first << "Max_value " << min_max_val.second << endl;
+            }
             ++iter;
         }
 
@@ -87,7 +90,6 @@ public:
 
         return min_max_time;
     }
-
 };
 
 #endif // VARIABLES_H_INCLUDED

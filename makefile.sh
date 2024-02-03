@@ -9,9 +9,6 @@ OTHERDIR=get_data/
 TARGET=Parser
 FLAGS= -lpthread
 
-LDFLAGS	= -L/usr/local/lib
-LDLIBS    = -lpthread -lm
-
 VPATH=$(OTHERDIR)
 
 ###########

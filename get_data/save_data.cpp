@@ -21,7 +21,7 @@ int save_data(VarClass* dataSource)
     double   var_value_max(0);
     int ret(0);
 
-    string filename = "rep_" + dataSource->fileName;
+    string filename = "rep_" + dataSource->fileName + ".txt";
     cout << "Open " << filename << " file ... ";
 
    repFile.open(filename);
@@ -50,7 +50,7 @@ int save_data(VarClass* dataSource)
 
         cout << "done" << endl;
 
-        ret = FILE_CREATED;
+        ret = SAVE_DATA_SUCCESS;
     }
     else
     {

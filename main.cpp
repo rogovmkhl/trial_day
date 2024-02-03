@@ -11,9 +11,6 @@
 
 using namespace std;
 
-VarClass varFromFile;
-
-
 int main(int argc, char* argv[])
 {
     int ret (-1);
@@ -21,24 +18,30 @@ int main(int argc, char* argv[])
     while (ret != EXIT_COMMAND)
     {
         vector<string> linesFromFile;
-        string fileName;
+
         /* read file and get data */
         ret = receive_data(&linesFromFile);
 
         /* parse data from file */
         if (ret == FILE_READ_OK)
         {
-            VarClass varFromFile;
+            unique_ptr<VarClass> varDataFromFile(new VarClass);
 
-            varFromFile.fileName = fileName;
-
-            ret = parse_string_lines(&linesFromFile, &varFromFile);
+            ret = parse_string_lines(&linesFromFile, varDataFromFile.get());
 
             if (ret == PARSE_SUCCESS)
             {
                 /* save data to file */
-                ret = save_data(&varFromFile);
+                ret = save_data(varDataFromFile.get());
 
+                if (ret == SAVE_DATA_SUCCESS)
+                {
+                    /* NOTHING TO DO */
+                }
+                else
+                {
+                    cout << "Can not save data to file." << endl;
+                }
                 cout << endl;
             }
             else

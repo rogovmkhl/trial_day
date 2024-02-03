@@ -2,7 +2,7 @@
 #define RECEIVE_DATA_H_INCLUDED
 #include <vector>
 
-#define MAX_FILE_NAME    128U
+#define MAX_FILE_NAME    40U
 #define FILE_NO_FILE     11U
 #define FILE_WRONG_NAME  12U
 #define FILE_NOT_READY   13U
