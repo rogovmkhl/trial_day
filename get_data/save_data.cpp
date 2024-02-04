@@ -1,9 +1,7 @@
 #include <iostream>
 #include <map>
-#include <vector>
 #include <fstream>
 #include <iterator>
-#include <thread>
 #include <string>
 #include "receive_data.h"
 
@@ -14,11 +12,9 @@ using namespace std;
 int save_data(VarClass* dataSource)
 {
     ofstream repFile;
-    string   time_min;
-    string   time_max;
+    pair<pair<time_t, int>, pair<time_t, int>> time_min_max;
+    pair<float,float>  var_value_min_max;
     string   stringLine;
-    double   var_value_min(0);
-    double   var_value_max(0);
     int ret(0);
 
     string filename = "rep_" + dataSource->fileName + ".txt";
@@ -35,14 +31,26 @@ int save_data(VarClass* dataSource)
 
         for(auto var : dataSource->varList)
         {
-            var_value_min = dataSource->get_ValMinMax(var).first;
-            var_value_max = dataSource->get_ValMinMax(var).second;
-            time_min      = dataSource->get_TimeMinMax(var).first;
-            time_max      = dataSource->get_TimeMinMax(var).second;
+            var_value_min_max = dataSource->get_ValMinMax(var);
+            time_min_max = dataSource->get_TimeMinMax(var);
+
+            char time_buf_min[80];
+            char time_buf_max[80];
+
+            struct tm *temp_tm_min;
+            struct tm *temp_tm_max;
+            temp_tm_min = localtime(&time_min_max.first.first);
+            temp_tm_max = localtime(&time_min_max.second.first);
+            strftime (time_buf_min,80,"%d.%m.%Y %X",temp_tm_min);
+            strftime (time_buf_max,80,"%d.%m.%Y %X",temp_tm_max);
 
             // create a sting line for a file
-            stringLine = to_string(var) + " ; " + to_string(var_value_min) + " ; " + time_min + " ; "
-                + to_string(var_value_max) + " ; " + time_max;
+            stringLine = to_string(var) + " ; " +
+                         to_string(var_value_min_max.first) + " ; " +
+                         time_buf_min + "." + to_string(time_min_max.first.second) + " ; " +
+                         to_string(var_value_min_max.second) + " ; " +
+                         time_buf_max + "." + to_string(time_min_max.second.second);
+
             // write string to a file
             repFile << stringLine << endl;
         }

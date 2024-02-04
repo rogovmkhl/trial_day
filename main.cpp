@@ -17,17 +17,17 @@ int main(int argc, char* argv[])
 
     while (ret != EXIT_COMMAND)
     {
-        vector<string> linesFromFile;
+        unique_ptr<vector<string>> linesFromFile(new vector<string>);
 
         /* read file and get data */
-        ret = receive_data(&linesFromFile);
+        ret = receive_data(linesFromFile.get());
 
         /* parse data from file */
         if (ret == FILE_READ_OK)
         {
             unique_ptr<VarClass> varDataFromFile(new VarClass);
 
-            ret = parse_string_lines(&linesFromFile, varDataFromFile.get());
+            ret = parse_string_lines(linesFromFile.get(), varDataFromFile.get());
 
             if (ret == PARSE_SUCCESS)
             {

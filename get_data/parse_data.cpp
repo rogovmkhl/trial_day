@@ -3,6 +3,8 @@
 #include <memory>
 #include <string>
 #include <map>
+#include <ctime>
+#include <iomanip>
 #include "parse_data.h"
 #include "receive_data.h"
 
@@ -74,7 +76,7 @@ int parse_value_line(string &stringLine, VarClass* classForData)
     int t_sec(0);
     int t_msec(0);
     string attr;
-    vector<int> timeRes;
+    pair<time_t, int> timeRes;
     string variable_name;
     int ret(PARSE_STOP);
 
@@ -84,15 +86,17 @@ int parse_value_line(string &stringLine, VarClass* classForData)
     {
         sscanf(one_line, "@%d:%f;%d;%d.%d.%d %d:%d:%d.%d", &variable, &value, &status, &t_day, &t_month, &t_year, &t_hour, &t_min, &t_sec, &t_msec);
 
-        /*Get time*/
-        timeRes.push_back(t_day);
-        timeRes.push_back(t_month);
-        timeRes.push_back(t_year);
-        timeRes.push_back(t_hour);
-        timeRes.push_back(t_min);
-        timeRes.push_back(t_sec);
-        timeRes.push_back(t_msec);
-        /**********/
+        struct tm record_time = {0};
+        record_time.tm_year = (t_year - 1900); // years since 1900
+        record_time.tm_mon  = (t_month - 1);   // months since January 0-11
+        record_time.tm_mday = t_day;
+        record_time.tm_hour = t_hour;
+        record_time.tm_min  = t_min;
+        record_time.tm_sec  = t_sec;
+        time_t record_time_t = mktime(&record_time);
+
+        timeRes.first = record_time_t;
+        timeRes.second = t_msec;
 
         classForData->var_value.insert({variable, value});
         classForData->var_status.insert({variable, status});
@@ -107,13 +111,7 @@ int parse_value_line(string &stringLine, VarClass* classForData)
 int parse_string_lines(vector<string>* lines_in, VarClass* classForData)
 {
     int ret(PARSE_STOP);
-    int vector_line(0); //help to go through vector
     int parseDataType (-1);
-    vector<int> var_time {};
-    string variable_str {};
-    vector<string> variable_attr {};
-
-    pair<vector<int>, string> parseTime;
 
     // File size
     classForData->lines = lines_in->size();
@@ -123,7 +121,6 @@ int parse_string_lines(vector<string>* lines_in, VarClass* classForData)
     // Get list of variables
     for (auto line : *lines_in)
     {
-        ++vector_line;
         if (line.find("HEADER") != string::npos)
         {
             parseDataType = PARSE_HEADER;

@@ -1,7 +1,5 @@
 CC = g++
-PRJ_DIR=/home/pi/Parser
-OBJ_DIR=/home/pi/Parser/obj
-INCLUDE_DIR=/home/pi/Parser/classes /home/pi/Parser/get_data
+INCLUDE_DIR=/classes /get_data
 
 
 INCLUDE = -I./ $(INCLUDE_DIR)
