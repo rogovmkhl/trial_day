@@ -13,19 +13,25 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-    int ret (-1);
+    int ret (ERROR);
 
-    while (ret != EXIT_COMMAND)
+    /* read file and get data */
+    if (argc > 0)
     {
         unique_ptr<vector<string>> linesFromFile(new vector<string>);
+        string arg_filename(argv[1]);
 
-        /* read file and get data */
-        ret = receive_data(linesFromFile.get());
+        cout << argc  <<" filename = " << arg_filename << endl;
+
+        ret = receive_data(linesFromFile.get(), argv[1]);
 
         /* parse data from file */
         if (ret == FILE_READ_OK)
         {
             unique_ptr<VarClass> varDataFromFile(new VarClass);
+
+            varDataFromFile->fileName = arg_filename;
+            cout << "class Filename " << varDataFromFile->fileName;
 
             ret = parse_string_lines(linesFromFile.get(), varDataFromFile.get());
 
@@ -53,6 +59,10 @@ int main(int argc, char* argv[])
         {
             cout << "Can not read a file." << endl;
         }
+    }
+    else
+    {
+        cout << "There is no file name" << endl;
     }
 
     cout << "Goodbye!" << endl;

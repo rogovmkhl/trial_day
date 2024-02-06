@@ -8,7 +8,7 @@
 #define FILE_NOT_READY   13U
 #define FILE_READ_OK     14U
 #define FILE_CREATED     40U
-#define EXIT_COMMAND     50U
+#define ERROR            101U
 
 
 #include "../classes/fileDataClass.h"
@@ -16,6 +16,6 @@
  * @arg_in
  * @ret    code number
  */
-int receive_data(vector<string>*);
+int receive_data(vector<string>*, char*);
 
 #endif // RECEIVE_DATA_H_INCLUDED
